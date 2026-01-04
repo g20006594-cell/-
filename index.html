@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>戀與深空 | 深空迴響非官方站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- 1. 全局變數與基礎設定 --- */
+        :root {
+            --bg-dark: #050810;      /* 深空黑 */
+            --bg-nav: rgba(5, 8, 16, 0.85);
+            --accent-color: #7df9ff; /* 黎深冰晶藍 */
+            --accent-glow: 0 0 10px rgba(125, 249, 255, 0.7);
+            --text-main: #ffffff;
+            --glass-card: rgba(14, 22, 43, 0.6);
+            --border-color: rgba(125, 249, 255, 0.3);
+        }
+
+        * { margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            scroll-behavior: smooth; 
+        }
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            font-family: "Microsoft JhengHei", sans-serif; 
+            overflow-x: hidden; 
+        }
+        a { 
+            text-decoration: none; 
+            color: inherit; 
+            transition: 0.3s; 
+        }
+        
+        /* 標題樣式 */
+        .section-title {
+            text-align: center; 
+            font-size: 2.5rem; 
+            margin: 4rem 0 2rem;
+            color: var(--accent-color); 
+            text-transform: uppercase; 
+            letter-spacing: 3px;
+            text-shadow: var(--accent-glow); 
+            position: relative;
+        }
+        .section-title::after {
+            content: ''; 
+            display: block; 
+            width: 50px; 
+            height: 3px; 
+            background: var(--accent-color);
+            margin: 10px auto; 
+            box-shadow: var(--accent-glow);
+        }
+
+        /* 按鈕樣式 */
+        .btn {
+            padding: 10px 25px; 
+            border: 1px solid var(--accent-color); 
+            color: var(--accent-color);
+            background: transparent; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            transition: 0.3s;
+            display: inline-block; 
+            margin-top: 10px; 
+            font-size: 0.9rem;
+        }
+        .btn:hover { 
+            background: var(--accent-color); 
+            color: #000; 
+            box-shadow: var(--accent-glow); 
+        }
+
+        /* --- 2. 導航欄 (Navbar) --- */
+        nav {
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            padding: 1.2rem 5%; 
+            z-index: 1000;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            background: var(--bg-nav); 
+            backdrop-filter: blur(10px); 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: var(--accent-color); 
+            letter-spacing: 2px; 
+        }
+        .nav-links { 
+            display: flex; 
+            gap: 20px; 
+            list-style: none; 
+        }
+        nav ul li {
+            margin-left: 20px;
+        }
+        .nav-links a:hover { 
+            color: var(--accent-color); 
+            text-shadow: var(--accent-glow); 
+        }
+
+        /* --- 3. 首頁 Hero Section (背景影片循環) --- */
+        #hero {
+            height: 100vh; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            overflow: hidden;
+        }
+        .video-bg {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            z-index: -2;
+        }
+        .overlay {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(5,8,16,0.4); 
+            z-index: -1;
+            background: radial-gradient(circle, transparent 20%, #050810 90%);
+        }
+        .hero-content { 
+            text-align: center; 
+            z-index: 1; 
+        }
+        .hero-title { 
+            font-size: 4rem; 
+            margin-bottom: 1rem; 
+            text-shadow: 0 0 20px rgba(125,249,255,0.5); 
+        }
+        .download-btn {
+            padding: 15px 50px; 
+            font-size: 1.5rem; 
+            border-radius: 50px;
+            background: var(--accent-color); 
+            color: #000; 
+            border: none; 
+            font-weight: bold;
+            cursor: pointer; 
+            box-shadow: 0 0 20px var(--accent-color); 
+            transition: 0.3s;
+        }
+        .download-btn:hover { 
+            transform: scale(1.05); 
+            background: #fff; 
+        }
+
+        /* --- 4. 角色介紹 (Cards + Modal) --- */
+        #characters { 
+            padding: 2rem 5%; 
+        }
+        .char-grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 25px; 
+        }
+        .char-card {
+            width: 220px; 
+            height: 350px; 
+            background: var(--glass-card);
+            border: 1px solid var(--border-color); 
+            border-radius: 15px;
+            overflow: hidden; 
+            cursor: pointer; 
+            transition: 0.4s; 
+            position: relative;
+        }
+        .char-card:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--accent-color); 
+            box-shadow: var(--accent-glow); 
+        }
+        .char-img-placeholder {
+            width: 100%; 
+            height: 75%; 
+            background: #222; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #555;
+            background-size: cover; 
+            background-position: center top;
+        }
+        .char-info { 
+            padding: 15px; 
+            text-align: center; 
+        }
+        .char-name { 
+            font-size: 1.2rem; 
+            color: var(--accent-color); 
+            font-weight: bold; 
+        }
+
+        /* 彈窗樣式 */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(5px);
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0; 
+            transition: opacity 0.3s;
+        }
+        .modal.show { 
+            display: flex; 
+            opacity: 1; 
+        }
+        .modal-content {
+            background: #0e162b; 
+            border: 1px solid var(--accent-color); 
+            width: 90%; 
+            max-width: 800px;
+            display: flex; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            box-shadow: 0 0 40px rgba(125,249,255,0.2);
+            position: relative;
+        }
+        .modal-left { 
+            width: 40%; 
+            background: #111; 
+            min-height: 400px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            /* 修正1: 確保圖片容器沒有多餘的透明度 */
+            opacity: 1; 
+            overflow: hidden;
+        }
+        .modal-right { 
+            width: 60%; 
+            padding: 40px; 
+            position: relative; 
+        }
+        .close-btn { 
+            position: absolute; 
+            top: 15px; 
+            right: 20px; 
+            font-size: 2rem; 
+            cursor: pointer; color: #fff; 
+        }
+        .close-btn:hover { 
+            color: var(--accent-color); 
+        }
+        
+        @media (max-width: 768px) {
+            .modal-content { 
+                flex-direction: column; 
+                height: 80vh; 
+                overflow-y: auto; 
+            }
+            .modal-left, .modal-right { 
+                width: 100%; 
+            }
+            .modal-left { 
+                height: 250px; 
+                min-height: auto;
+            }
+        }
+
+        /* --- 5. 版本與活動情報 (Grid) --- */
+        .info-section { 
+            padding: 2rem 10%; 
+        }
+        .info-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+        }
+        .info-card {
+            background: rgba(255,255,255,0.05); 
+            padding: 20px; 
+            border-left: 3px solid var(--accent-color);
+            transition: 0.3s;
+        }
+        .info-card:hover { 
+            background: rgba(125, 249, 255, 0.1); 
+        }
+        .date { 
+            color: #888; 
+            font-size: 0.85rem; 
+            margin-bottom: 5px; 
+            display: block; 
+        }
+        .info-title { 
+            font-size: 1.1rem; 
+            margin-bottom: 10px; 
+            font-weight: bold; 
+        }
+
+        /* --- 6. 圖片展示 (Wallpaper Loop - 修正為自動循環) --- */
+        #gallery { 
+            padding: 2rem 0; 
+            overflow: hidden; 
+            position: relative;
+        }
+        /* 外層容器 */
+        .gallery-container {
+            display: flex;
+            width: 100%;
+            overflow: hidden; /* 隱藏超出範圍的部分 */
+        }
+        /* 內部軌道，負責動畫 */
+        .gallery-track {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+            /* 修正2: 加入無限捲動動畫 */
+            animation: scroll-left 30s linear infinite; 
+            width: max-content; /* 讓寬度根據內容自動撐開 */
+        }
+        
+        /* 定義捲動動畫 */
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* 移動一半的距離，配合重複的圖片 */
+        }
+
+        /* 滑鼠懸停時暫停 */
+        .gallery-track:hover {
+            animation-play-state: paused;
+        }
+        
+        .wallpaper-card {
+            flex-shrink: 0; 
+            border-radius: 10px;
+            transition: 0.3s; 
+            border: 1px solid #333;
+            overflow: hidden;
+            /* 設定圖片容器大小 */
+            width: 400px;
+            aspect-ratio: 2/3; /* 改為直式比例以適應角色圖 */
+        }
+        .wallpaper-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            /* 調整圖片位置，避免重要部分被切掉 */
+            object-position: top center; 
+        }
+
+        /* 響應式圖片大小 */
+        @media (max-width: 768px) {
+            .wallpaper-card { 
+                width: 60vw; 
+            }
+        }
+
+        /* --- 7. 影片展示區 --- */
+        #videos { 
+            padding: 2rem 10%; 
+            background: #020305; 
+        }
+        .video-wrapper {
+            position: relative; 
+            padding-bottom: 56.25%; /* 16:9 */ 
+            height: 0; 
+            overflow: hidden;
+            max-width: 100%; 
+            background: #000; 
+            border: 1px solid #333; 
+            margin-bottom: 20px;
+        }
+        .video-wrapper iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+        }
+
+        /* --- 8. 頁尾 Footer --- */
+        footer {
+            background: #000; 
+            padding: 3rem 0; 
+            text-align: center; 
+            border-top: 1px solid #222;
+        }
+        .social-links { 
+            display: flex; 
+            justify-content: center; 
+            gap: 25px; 
+            margin-bottom: 20px; 
+        }
+        .social-icon {
+            font-size: 1.8rem; 
+            color: #888; 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            border: 1px solid #333;
+        }
+        .social-icon:hover { 
+            color: var(--accent-color); 
+            border-color: var(--accent-color); 
+            box-shadow: var(--accent-glow); 
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><i class="fas fa-satellite-dish"></i> LOVE AND DEEPSPACE</div>
+        <ul class="nav-links">
+            <li><a href="#hero">首頁</a></li>
+            <li><a href="#characters">角色介紹</a></li>
+            <li><a href="#versions">版本情報</a></li>
+            <li><a href="#events">活動情報</a></li>
+            <li><a href="#gallery">圖片展示</a></li>
+            <li><a href="#videos">PV 映像</a></li>
+            <li><a href="#footer">社群</a></li>
+        </ul>
+    </nav>
+
+    <header id="hero">
+        <video id="hero-video" class="video-bg" autoplay muted playsinline>
+            <source src="v1.mp4" type="video/mp4">
+        </video>
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">跨越光年 與你並肩</h1>
+            <p style="font-size: 1.2rem; letter-spacing: 5px; color: #ccc; margin-bottom: 30px;">LOVE AND DEEPSPACE</p>
+            <button class="download-btn" onclick="window.open('https://loveanddeepspace.infoldgames.com/zh-TW/home', '_blank')">
+                <i class="fas fa-download"></i> 立即下載
+            </button>
+        </div>
+    </header>
+
+    <section id="characters">
+        <h2 class="section-title">主要角色</h2>
+        <div class="char-grid">
+            <div class="char-card" data-id="zayne">
+                <div class="char-img-placeholder"><i class="fas fa-snowflake fa-3x"></i></div>
+                <div class="char-info">
+                    <div class="char-name">黎深</div>
+                    <small>Evol: 冰</small>
+                </div>
+            </div>
+            <div class="char-card" data-id="xavier">
+                <div class="char-img-placeholder"><i class="fas fa-star fa-3x" style="color:#f9d71c"></i></div>
+                <div class="char-info">
+                    <div class="char-name" style="color:#f9d71c">沈星回</div>
+                    <small>Evol: 光</small>
+                </div>
+            </div>
+            <div class="char-card" data-id="rafayel">
+                <div class="char-img-placeholder"><i class="fas fa-fire fa-3x" style="color:#ff6b6b"></i></div>
+                <div class="char-info">
+                    <div class="char-name" style="color:#ff6b6b">祁煜</div>
+                    <small>Evol: 火</small>
+                </div>
+            </div>
+            <div class="char-card" data-id="sylus">
+                <div class="char-img-placeholder"><i class="fas fa-crow fa-3x" style="color:#ff3333"></i></div>
+                <div class="char-info">
+                    <div class="char-name" style="color:#ff3333">秦徹</div>
+                    <small>Evol: 能量操控</small>
+                </div>
+            </div>
+             <div class="char-card" data-id="caleb">
+                <div class="char-img-placeholder"><i class="fas fa-feather fa-3x" style="color:#a8e6cf"></i></div>
+                <div class="char-info">
+                    <div class="char-name" style="color:#a8e6cf">夏以晝</div>
+                    <small>Evol: 引力控制</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="versions" class="info-section" style="background: #0e162b;">
+        <h2 class="section-title">版本情報</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <span class="date">2024.12.01</span>
+                <div class="info-title">Ver 2.0 「深空彼端」</div>
+                <p>新增主線劇情第10章，開放全新地圖與探索玩法。</p>
+                <a href="https://loveanddeepspace.infoldgames.com/zh-TW/home" target="_blank" class="btn">前往官網查看</a>
+            </div>
+            <div class="info-card">
+                <span class="date">2024.10.15</span>
+                <div class="info-title">Ver 1.5 「迷霧都市」</div>
+                <p>新增獵人錦標賽賽季，優化戰鬥體驗。</p>
+                <a href="https://loveanddeepspace.infoldgames.com/zh-TW/home" target="_blank" class="btn">前往官網查看</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="events" class="info-section">
+        <h2 class="section-title">最新活動</h2>
+        <div class="info-grid">
+            <div class="info-card" style="border-left-color: #f9d71c;">
+                <span class="date">進行中</span>
+                <div class="info-title">【限時】光影交織的誓言</div>
+                <p>五星思念機率UP！累積許願可獲得限定「深空許願券」。</p>
+                <a href="https://loveanddeepspace.infoldgames.com/zh-TW/home" target="_blank" class="btn" style="color:#f9d71c; border-color:#f9d71c;">查看卡池詳情</a>
+            </div>
+            <div class="info-card" style="border-left-color: #ff6b6b;">
+                <span class="date">預告</span>
+                <div class="info-title">生日慶典：祁煜的色彩</div>
+                <p>完成生日籌備任務，免費獲得四星思念及專屬裝扮。</p>
+                <a href="https://loveanddeepspace.infoldgames.com/zh-TW/home" target="_blank" class="btn" style="color:#ff6b6b; border-color:#ff6b6b;">查看活動詳情</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <h2 class="section-title">映像圖鑑</h2>
+        <div class="gallery-container">
+            <div class="gallery-track">
+                <div class="wallpaper-card"><img src="602390735_847600804916903_9082767298299464386_n.jpg" alt="img1"></div>
+                <div class="wallpaper-card"><img src="602367371_847600654916918_626714050226218700_n.jpg" alt="img2"></div>
+                <div class="wallpaper-card"><img src="603773719_847600691583581_1237954828262766214_n.jpg" alt="img3"></div>
+                <div class="wallpaper-card"><img src="604597235_847600781583572_8057147314704437332_n.jpg" alt="img4"></div>
+                <div class="wallpaper-card"><img src="603856588_847600724916911_7135347198768377212_n.jpg" alt="img5"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767007319824.jpg" alt="img6"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767007372435.jpg" alt="img7"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767007354774_0.jpg" alt="img8"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767534709313.jpg" alt="img9"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767007341889_0.jpg" alt="img10"></div>
+                
+                <div class="wallpaper-card"><img src="602390735_847600804916903_9082767298299464386_n.jpg" alt="img1"></div>
+                <div class="wallpaper-card"><img src="602367371_847600654916918_626714050226218700_n.jpg" alt="img2"></div>
+                <div class="wallpaper-card"><img src="603773719_847600691583581_1237954828262766214_n.jpg" alt="img3"></div>
+                <div class="wallpaper-card"><img src="604597235_847600781583572_8057147314704437332_n.jpg" alt="img4"></div>
+                <div class="wallpaper-card"><img src="603856588_847600724916911_7135347198768377212_n.jpg" alt="img5"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767007319824.jpg" alt="img6"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767007372435.jpg" alt="img7"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767007354774_0.jpg" alt="img8"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767534709313.jpg" alt="img9"></div>
+                <div class="wallpaper-card"><img src="messageImage_1767007341889_0.jpg" alt="img10"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="videos">
+        <h2 class="section-title">PV 映像</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div>
+                <h3 style="margin-bottom:10px; color:#ccc;">最新版本 PV</h3>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/lv4jsEFe3yA" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div>
+                <h3 style="margin-bottom:10px; color:#ccc;">角色個人 EP</h3>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/CNirSGg5WU4" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="footer" style="background-color: #00b7ff;">
+        <div class="social-links">
+            <a href="https://loveanddeepspace.infoldgames.com/zh-TW/home" target="_blank" class="social-icon" title="官網">
+                <i class="fas fa-globe"></i>
+            </a>
+            <a href="https://www.facebook.com/loveanddeepspace.tw" target="_blank" class="social-icon" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://twitter.com/Love_Deepspace" target="_blank" class="social-icon" title="X / Twitter">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+            <a href="instagram.com/love_deepspace_tw" target="_blank" class="social-icon" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/@LoveandDeepSpace_tw" target="_blank" class="social-icon" title="YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
+        </div>
+        <p>&copy; 2024 Love and Deepspace Fan Site.</p>
+        <p style="font-size:14px;">本網頁為練習製作，非官方粉絲網頁，素材版權歸 Infold Games 所有。</p>
+    </footer>
+
+    <div id="char-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-left" id="modal-img-container">
+                <i class="fas fa-user fa-5x" style="color:#555;"></i>
+            </div>
+            <div class="modal-right">
+                <h2 id="modal-name" style="font-size: 2.5rem; margin-bottom: 10px; color: var(--accent-color);"></h2>
+                <h4 id="modal-evol" style="color: #ccc; margin-bottom: 20px;"></h4>
+                <p id="modal-desc" style="line-height: 1.8; color: #ddd;">介紹文字...</p>
+                <div style="margin-top: 30px;">
+                    <span style="border:1px solid #555; padding:5px 10px; border-radius:5px; font-size:0.8rem; margin-right:5px;">生日: <span id="modal-bday"></span></span>
+                    <span style="border:1px solid #555; padding:5px 10px; border-radius:5px; font-size:0.8rem;">身分: <span id="modal-role"></span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 背景影片循環播放 (5部) ---
+        // 請務必準備好檔案：v1.mp4 ~ v5.mp4
+        const playlist = ["v1.mp4", "v2.mp4", "v3.mp4", "v4.mp4", "v5.mp4"];
+        let currentVidIdx = 0;
+        const heroVideo = document.getElementById("hero-video");
+
+        if(heroVideo) {
+            heroVideo.addEventListener('ended', () => {
+                currentVidIdx = (currentVidIdx + 1) % playlist.length;
+                heroVideo.src = playlist[currentVidIdx];
+                heroVideo.play().catch(e => console.log("自動播放需互動"));
+            });
+        }
+
+        // --- 2. 角色資料庫與彈窗 ---
+        // 更新了圖片連結，對應到上傳的檔案
+        const charData = {
+            "zayne": {
+                name: "黎深 (Zayne)",
+                evol: "Evol: 冰",
+                desc: "臨空市中心醫院心臟外科主任，也是你的主治醫生。外表冷漠，實則深情。與你有著橫跨時空的深刻羈絆。",
+                bday: "9月5日",
+                role: "心臟外科醫生",
+                color: "#7df9ff",
+                img: "image_1.png" // 對應黑髮削蘋果的圖片
+            },
+            "xavier": {
+                name: "沈星回 (Xavier)",
+                evol: "Evol: 光",
+                desc: "神秘的深空獵人，似乎永遠保持著年輕的模樣。行蹤不定，喜愛睡覺，卻總能在危險時刻出現保護你。",
+                bday: "10月16日",
+                role: "深空獵人",
+                color: "#f9d71c",
+                img: "image_0.png" // 對應銀髮戰鬥服的圖片
+            },
+            "rafayel": {
+                name: "祁煜 (Rafayel)",
+                evol: "Evol: 火",
+                desc: "天才畫家，利莫里亞的傳說。性格傲嬌、充滿藝術氣息，與海洋有著不解之緣。",
+                bday: "3月6日",
+                role: "畫家",
+                color: "#ff6b6b",
+                img: "image_4.png" // 對應紫髮雕塑的圖片
+            },
+            "sylus": {
+                name: "秦徹 (Sylus)",
+                evol: "Evol: 能量操控",
+                desc: "暗點的首領，危險而迷人的支配者。他的出現將你的命運推向了另一個未知的方向。",
+                bday: "4月18日",
+                role: "暗點首領",
+                color: "#ff3333",
+                img: "image_3.png" // 對應白髮紅眼的圖片
+            },
+            "caleb": {
+                name: "夏以晝 (Caleb)",
+                evol: "Evol: 引力控制",
+                desc: "如同哥哥般的存在，溫柔地守護著你成長。他的笑容是你記憶中最溫暖的光。",
+                bday: "6月13日",
+                role: "DAA戰鬥機飛行員/遠空艦隊執艦官",
+                color: "#a8e6cf",
+                img: "image_2.png" // 對應黑髮拿槍的圖片
+            }
+        };
+
+        const modal = document.getElementById("char-modal");
+        const closeBtn = document.querySelector(".close-btn");
+        const cards = document.querySelectorAll(".char-card");
+
+        // 綁定點擊事件
+        cards.forEach(card => {
+            card.addEventListener("click", () => {
+                const id = card.getAttribute("data-id");
+                const data = charData[id];
+                
+                // 填入資料
+                document.getElementById("modal-name").innerText = data.name;
+                document.getElementById("modal-name").style.color = data.color;
+                document.getElementById("modal-evol").innerText = data.evol;
+                document.getElementById("modal-desc").innerText = data.desc;
+                document.getElementById("modal-bday").innerText = data.bday;
+                document.getElementById("modal-role").innerText = data.role;
+                
+                // 修正1: 正確插入圖片
+                const imgContainer = document.getElementById("modal-img-container");
+                // 清空之前的內容
+                imgContainer.innerHTML = ""; 
+                // 恢復透明度（移除舊的半透明設定）
+                imgContainer.style.opacity = "1";
+                imgContainer.style.background = "transparent";
+                
+                // 建立圖片元素
+                const img = document.createElement("img");
+                img.src = data.img;
+                img.style.width = "100%";
+                img.style.height = "100%";
+                // 保持圖片比例，並填滿容器
+                img.style.objectFit = "cover";
+                // 將圖片的重點部位調整到上方，避免被切掉
+                img.style.objectPosition = "top center";
+                imgContainer.appendChild(img);
+
+                // 顯示彈窗
+                modal.classList.add("show");
+                modal.style.display = "flex";
+            });
+        });
+
+        // 關閉
+        closeBtn.onclick = () => {
+            modal.classList.remove("show");
+            setTimeout(() => modal.style.display = "none", 300);
+        };
+        window.onclick = (e) => {
+            if (e.target == modal) {
+                closeBtn.click();
+            }
+        };
+
+    </script>
+</body>
+</html>
